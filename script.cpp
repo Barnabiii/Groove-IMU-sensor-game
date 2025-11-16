@@ -16,37 +16,12 @@ uint8_t buffer_m[6];
  
 int16_t ax, ay, az;
 int16_t gx, gy, gz;
-int16_t   mx, my, mz;
- 
- 
-float heading;
-float tiltheading;
+int16_t mx, my, mz;
  
 float Axyz[3];
 float Gxyz[3];
-float Mxyz[3];
  
- 
-#define sample_num_mdate  5000
- 
-volatile float mx_sample[3];
-volatile float my_sample[3];
-volatile float mz_sample[3];
- 
-static float mx_centre = 0;
-static float my_centre = 0;
-static float mz_centre = 0;
- 
-volatile int mx_max = 0;
-volatile int my_max = 0;
-volatile int mz_max = 0;
- 
-volatile int mx_min = 0;
-volatile int my_min = 0;
-volatile int mz_min = 0;
- 
-void setup()
-{
+void setup() {
     // join I2C bus (I2Cdev library doesn't do this automatically)
     Wire.begin();
  
@@ -69,59 +44,41 @@ void setup()
  
 }
  
-void loop()
-{
- 
-    getAccel_Data();
-    getGyro_Data();
+void loop() {
+    //get data
+    getSensor_Data();
 
- 
-    Serial.println("calibration parameter: ");
-    Serial.print(mx_centre);
-    Serial.print("         ");
-    Serial.print(my_centre);
-    Serial.print("         ");
-    Serial.println(mz_centre);
-    Serial.println("     ");
- 
- 
+    //print data
     Serial.println("Acceleration(g) of X,Y,Z:");
     Serial.print(Axyz[0]);
     Serial.print(",");
     Serial.print(Axyz[1]);
     Serial.print(",");
     Serial.println(Axyz[2]);
+ 
     Serial.println("Gyro(degress/s) of X,Y,Z:");
     Serial.print(Gxyz[0]);
     Serial.print(",");
     Serial.print(Gxyz[1]);
     Serial.print(",");
     Serial.println(Gxyz[2]);
+ 
     Serial.println();
-    delay(1000);
- 
+
+    delay(500);
 }
  
  
-void getHeading(void)
-{
-    heading = 180 * atan2(Mxyz[1], Mxyz[0]) / PI;
-    if (heading < 0) heading += 360;
-}
- 
- 
-void getAccel_Data(void)
-{
-    accelgyro.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
-    Axyz[0] = (double) ax / 16384;
+void getSensor_Data(void)
+{ 
+    accelgyro.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz); //store measures into ax ay az, gx gy gz, mx my mz
+    //map values of acceleration into Axyz vector (array)
+    Axyz[0] = (double) ax / 16384; // range from -2 to 2 ?
     Axyz[1] = (double) ay / 16384;
     Axyz[2] = (double) az / 16384;
-}
- 
-void getGyro_Data(void)
-{
-    accelgyro.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
-    Gxyz[0] = (double) gx * 250 / 32768;
+
+    //map values of Gyroscope into Gxyz vector (array)
+    Gxyz[0] = (double) gx * 250 / 32768; // range from -250 to 250 ?
     Gxyz[1] = (double) gy * 250 / 32768;
     Gxyz[2] = (double) gz * 250 / 32768;
 }
