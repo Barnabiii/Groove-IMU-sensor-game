@@ -13,6 +13,7 @@ MPU9250 accelgyro;
 int16_t ax, ay, az;
  
 float Axyz[3];
+float BaseSetxyz[3];
  
 void setup() {
     // join I2C bus (I2Cdev library doesn't do this automatically)
@@ -34,23 +35,30 @@ void setup() {
  
     delay(1000);
     Serial.println("     ");
- 
+getSensor_Data();
+    delay(3000);
+    Serial.println("Calibration starting... Please hold still for x seconds");
+    delay(3000);
+    BaseSetxyz[0] = Axyz[0];
+    BaseSetxyz[1] = Axyz[1];
+    BaseSetxyz[2] = Axyz[2];
+  
+    Serial.println(BaseSetxyz[0]);
+    Serial.println(BaseSetxyz[1]);
+    Serial.println(BaseSetxyz[2]);
+    Serial.println();
+   delay(4000);
 }
  
 void loop() {
     //get data
     getSensor_Data();
-
     //print data
-    Serial.println("Acceleration(g) of X,Y,Z:");
-    Serial.print(Axyz[0]);
+    Serial.print(BaseSetxyz[0]-Axyz[0]);
     Serial.print(",");
-    Serial.print(Axyz[1]);
+    Serial.print(BaseSetxyz[1]-Axyz[1]);
     Serial.print(",");
-    Serial.println(Axyz[2]);
- 
-
- 
+    Serial.println(BaseSetxyz[2]-Axyz[2]);
     Serial.println();
 
     delay(500);
