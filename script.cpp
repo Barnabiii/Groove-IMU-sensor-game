@@ -8,18 +8,11 @@
 // specific I2C addresses may be passed as a parameter here
 // AD0 low = 0x68 (default for InvenSense evaluation board)
 // AD0 high = 0x69
-MPU9250 accelgyro;
- 
- 
-uint8_t buffer_m[6];
- 
+MPU9250 accelgyro; 
  
 int16_t ax, ay, az;
-int16_t gx, gy, gz;
-int16_t mx, my, mz;
  
 float Axyz[3];
-float Gxyz[3];
  
 void setup() {
     // join I2C bus (I2Cdev library doesn't do this automatically)
@@ -56,12 +49,7 @@ void loop() {
     Serial.print(",");
     Serial.println(Axyz[2]);
  
-    Serial.println("Gyro(degress/s) of X,Y,Z:");
-    Serial.print(Gxyz[0]);
-    Serial.print(",");
-    Serial.print(Gxyz[1]);
-    Serial.print(",");
-    Serial.println(Gxyz[2]);
+
  
     Serial.println();
 
@@ -69,16 +57,11 @@ void loop() {
 }
  
  
-void getSensor_Data(void)
-{ 
-    accelgyro.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz); //store measures into ax ay az, gx gy gz, mx my mz
+void getSensor_Data(void) { 
+    accelgyro.getAcceleration(&ax, &ay, &az); //store measures into ax ay az
     //map values of acceleration into Axyz vector (array)
     Axyz[0] = (double) ax / 16384; // range from -2 to 2 ?
     Axyz[1] = (double) ay / 16384;
     Axyz[2] = (double) az / 16384;
 
-    //map values of Gyroscope into Gxyz vector (array)
-    Gxyz[0] = (double) gx * 250 / 32768; // range from -250 to 250 ?
-    Gxyz[1] = (double) gy * 250 / 32768;
-    Gxyz[2] = (double) gz * 250 / 32768;
 }
