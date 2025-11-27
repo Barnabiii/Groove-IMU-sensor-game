@@ -51,8 +51,8 @@ void loop() {
     getSensor_Data();
     //print data
     int mesureXY[2];
-    int mesureXY[0] =  (BaseSetxyz[0]-Axyz[0])*100;
-    int mesureXY[1] = (BaseSetxyz[1]-Axyz[1])*100;
+    mesureXY[0] =  (BaseSetxyz[0]-Axyz[0])*100;
+    mesureXY[1] = (BaseSetxyz[1]-Axyz[1])*100;
     
     InclineX = map(mesureXY[0], -150, 150, 0, 180);
     InclineY = map(mesureXY[1], -150, 150, 0, 180);
