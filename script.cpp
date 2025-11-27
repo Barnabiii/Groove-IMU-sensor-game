@@ -35,7 +35,6 @@ void setup() {
     // initialize device
     Serial.println("Initializing I2C devices...");
     accelgyro.initialize();
-
  
     // verify connection
     Serial.println("Testing device connections...");
@@ -45,29 +44,7 @@ void setup() {
     ServoX.attach(4);
     ServoY.attach(5);
     
-    delay(1000);
-    Serial.println("     ");
-    getSensor_Data();
-
-    
-    delay(3000);
-    Serial.println("Calibration starting... Please hold still for 4 seconds");
-    delay(1000);
-    Serial.println("Calibration starting... Please hold still for 3 seconds");
-    delay(1000);
-    Serial.println("Calibration starting... Please hold still for 2 seconds");
-    delay(1000);
-    Serial.println("Calibration starting... Please hold still for 1 seconds");
-    delay(1000);
-    BaseSetxyz[0] = Axyz[0];
-    BaseSetxyz[1] = Axyz[1];
-    BaseSetxyz[2] = Axyz[2];
-  
-    Serial.println(BaseSetxyz[0]);
-    Serial.println(BaseSetxyz[1]);
-    Serial.println(BaseSetxyz[2]);
-    Serial.println();
-    delay(4000);
+    Calibrating();
 }
  
 void loop() {
@@ -88,16 +65,32 @@ void loop() {
     ServoX.write(InclineX);
     ServoY.write(InclineY);
     
-    /*Serial.print((BaseSetxyz[0]-Axyz[0]));
-    Serial.print(",");
-    Serial.print(BaseSetxyz[1]-Axyz[1]);
-    Serial.print(",");
-    Serial.println(BaseSetxyz[2]-Axyz[2]);
-    */Serial.println();
+    Serial.println();
     
     delay(5);
 }
+
+void Calibrating() {
+    Serial.println("     ");
+    delay(3000);
+    Serial.println("Calibration starting... Please hold still for 3 seconds");
+    delay(1000);
+    Serial.println("Calibration starting... Please hold still for 2 seconds");
+    delay(1000);
+    Serial.println("Calibration starting... Please hold still for 1 seconds");
+    delay(1000);
  
+    getSensor_Data();
+    BaseSetxyz[0] = Axyz[0];
+    BaseSetxyz[1] = Axyz[1];
+    BaseSetxyz[2] = Axyz[2];
+  
+    Serial.println(BaseSetxyz[0]);
+    Serial.println(BaseSetxyz[1]);
+    Serial.println(BaseSetxyz[2]);
+    Serial.println();
+    delay(1000);
+}
  
 void getSensor_Data(void) { 
     accelgyro.getAcceleration(&ax, &ay, &az); //store measures into ax ay az
