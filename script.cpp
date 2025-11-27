@@ -1,4 +1,5 @@
 #include "Wire.h"
+#include <Servo.h>
  
 // I2Cdev and MPU9250 must be installed as libraries, or else the .cpp/.h files
 // for both classes must be in the include path of your project
@@ -14,7 +15,14 @@ int16_t ax, ay, az;
  
 float Axyz[3];
 float BaseSetxyz[3];
- 
+
+int InclineX = 90;
+int InclineY = 90;
+
+Servo ServoX;
+Servo ServoY;
+
+
 void setup() {
     // join I2C bus (I2Cdev library doesn't do this automatically)
     Wire.begin();
@@ -32,13 +40,25 @@ void setup() {
     // verify connection
     Serial.println("Testing device connections...");
     Serial.println(accelgyro.testConnection() ? "MPU9250 connection successful" : "MPU9250 connection failed");
- 
+
+
+    ServoX.attach(4);
+    ServoY.attach(5);
+    
     delay(1000);
     Serial.println("     ");
-getSensor_Data();
+    getSensor_Data();
+
+    
     delay(3000);
-    Serial.println("Calibration starting... Please hold still for x seconds");
-    delay(3000);
+    Serial.println("Calibration starting... Please hold still for 4 seconds");
+    delay(1000);
+    Serial.println("Calibration starting... Please hold still for 3 seconds");
+    delay(1000);
+    Serial.println("Calibration starting... Please hold still for 2 seconds");
+    delay(1000);
+    Serial.println("Calibration starting... Please hold still for 1 seconds");
+    delay(1000);
     BaseSetxyz[0] = Axyz[0];
     BaseSetxyz[1] = Axyz[1];
     BaseSetxyz[2] = Axyz[2];
@@ -47,21 +67,35 @@ getSensor_Data();
     Serial.println(BaseSetxyz[1]);
     Serial.println(BaseSetxyz[2]);
     Serial.println();
-   delay(4000);
+    delay(4000);
 }
  
 void loop() {
     //get data
     getSensor_Data();
     //print data
-    Serial.print(BaseSetxyz[0]-Axyz[0]);
+    int Xvalue = 0;
+    int Yvalue = 0;
+    
+    Xvalue = (BaseSetxyz[0]-Axyz[0])*100;
+    Yvalue = (BaseSetxyz[1]-Axyz[1])*100;
+    InclineX = map(Xvalue, -150, 150, 0, 180);
+    InclineY = map(Yvalue, -150, 150, 0, 180);
+    Serial.print (InclineX);
+    Serial.print(",");
+    Serial.print (InclineY);
+
+    ServoX.write(InclineX);
+    ServoY.write(InclineY);
+    
+    /*Serial.print((BaseSetxyz[0]-Axyz[0]));
     Serial.print(",");
     Serial.print(BaseSetxyz[1]-Axyz[1]);
     Serial.print(",");
     Serial.println(BaseSetxyz[2]-Axyz[2]);
-    Serial.println();
-
-    delay(500);
+    */Serial.println();
+    
+    delay(5);
 }
  
  
