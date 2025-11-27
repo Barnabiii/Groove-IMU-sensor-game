@@ -24,7 +24,6 @@ Servo ServoY;
 
 
 void setup() {
-    // join I2C bus (I2Cdev library doesn't do this automatically)
     Wire.begin();
  
     // initialize serial communication
@@ -51,21 +50,20 @@ void loop() {
     //get data
     getSensor_Data();
     //print data
-    int Xvalue = 0;
-    int Yvalue = 0;
+    int mesureXY[2];
+    int mesureXY[0] =  (BaseSetxyz[0]-Axyz[0])*100;
+    int mesureXY[1] = (BaseSetxyz[1]-Axyz[1])*100;
     
-    Xvalue = (BaseSetxyz[0]-Axyz[0])*100;
-    Yvalue = (BaseSetxyz[1]-Axyz[1])*100;
-    InclineX = map(Xvalue, -150, 150, 0, 180);
-    InclineY = map(Yvalue, -150, 150, 0, 180);
+    InclineX = map(mesureXY[0], -150, 150, 0, 180);
+    InclineY = map(mesureXY[1], -150, 150, 0, 180);
+ 
     Serial.print (InclineX);
     Serial.print(",");
     Serial.print (InclineY);
-
+    Serial.println();
+ 
     ServoX.write(InclineX);
     ServoY.write(InclineY);
-    
-    Serial.println();
     
     delay(5);
 }
